@@ -44,6 +44,11 @@ dependencies {
         pomCompile(this)
     }
 
+    modRuntimeOnly("org.redlance.dima_dencep.mods:TranslationFallbacksNeo:${project["translationfallbacks_version"]}") {
+        include(this)
+        pomCompile(this)
+    }
+
     implementation("net.raphimc:NoteBlockLib:${project["noteblocklib_version"]}") {
         forgeRuntimeLibrary(this)
         include(this)
@@ -63,7 +68,6 @@ dependencies {
 
     // Temp fixes
     forgeRuntimeLibrary("org.javassist:javassist:3.30.2-GA")
-    forgeRuntimeLibrary("com.zigythebird:mochafloats:1.1.3")
 }
 
 tasks.processResources {
@@ -88,6 +92,7 @@ java {
 }
 
 tasks.shadowJar {
+    duplicatesStrategy = DuplicatesStrategy.WARN
     configurations = listOf(shadowCommon)
     archiveClassifier.set("dev-shadow")
     mergeServiceFiles()
@@ -104,10 +109,8 @@ tasks.jar {
     archiveClassifier.set("dev")
 }
 
-components.getByName<AdhocComponentWithVariants>("java") {
-    withVariantsFromConfiguration(configurations.shadowRuntimeElements.get()) {
-        skip()
-    }
+shadow {
+    addShadowVariantIntoJavaComponent = false
 }
 
 publishing {

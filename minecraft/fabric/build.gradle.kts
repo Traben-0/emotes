@@ -64,6 +64,11 @@ dependencies {
         pomCompile(this)
     }
 
+    modRuntimeOnly("org.redlance.dima_dencep.mods:TranslationFallbacksFabric:${project["translationfallbacks_version"]}") {
+        include(this)
+        pomCompile(this)
+    }
+
     // Third-party
     modImplementation("com.blamejared.searchables:Searchables-fabric-${minecraft_version}:${project["searchables_version"]}") {
         isTransitive = false
@@ -104,6 +109,7 @@ java {
 // If you remove this task, sources will not be generated.
 
 tasks.shadowJar {
+    duplicatesStrategy = DuplicatesStrategy.WARN
     configurations = listOf(shadowCommon)
     archiveClassifier.set("dev-shadow")
     mergeServiceFiles()
@@ -119,10 +125,8 @@ tasks.jar {
     archiveClassifier.set("dev")
 }
 
-components.getByName<AdhocComponentWithVariants>("java") {
-    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements.get()) {
-        skip()
-    }
+shadow {
+    addShadowVariantIntoJavaComponent = false
 }
 
 publishing {
